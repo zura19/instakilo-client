@@ -1,6 +1,4 @@
 import { Smile } from "lucide-react";
-import PickerReact from "@emoji-mart/react";
-import data from "@emoji-mart/data";
 import { useRef } from "react";
 import {
   DropdownMenu,
@@ -26,27 +24,67 @@ export default function Emojy({
 }: props) {
   const pickerRef = useRef<HTMLDivElement>(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function handleEmojySelect(e: any) {
-    const cursor = inputRef.current.selectionStart;
-    const newText = text.slice(0, cursor) + e.native + text.slice(cursor);
-    setText(newText);
+  const emojys = [
+    "😂",
+    "❤️",
+    "😀",
+    "😁",
+    "😃",
+    "😄",
+    "😅",
+    "😆",
+    "😉",
+    "😊",
+    "🙂",
+    "🙃",
+    "😋",
+    "😎",
+    "😍",
+    "😘",
+    "😗",
+    "😙",
+    "😚",
+    "😇",
+    "😈",
+    "👹",
+    "👺",
+    "👻",
+    "👼",
+    "👽",
+    "👾",
+    "👿",
+    "💀",
+    "👻",
+  ];
 
-    setTimeout(() => {
-      inputRef.current.selectionStart = cursor + e.native.length;
-      inputRef.current.selectionEnd = cursor + e.native.length;
-      inputRef.current.focus();
-    }, 0);
+  function handleEmojySelect(emojy: string) {
+    const cursor = inputRef.current.selectionStart;
+    const newText = text.slice(0, cursor) + emojy + text.slice(cursor);
+    inputRef.current.focus();
+
+    setText(newText);
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Smile className={iconClass} size={18} />
+        <Smile
+          onClick={() => pickerRef.current?.focus()}
+          className={iconClass}
+          size={18}
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent align={align} className="h-[340px] ">
-        <div ref={pickerRef}>
-          <PickerReact onEmojiSelect={handleEmojySelect} data={data} />
+        <div className="grid grid-cols-6 gap-2" ref={pickerRef}>
+          {emojys.map((emoji, i) => (
+            <span
+              key={i}
+              className="cursor-pointer p-1 rounded-full hover:bg-primary/10 transition-all duration-300"
+              onClick={() => handleEmojySelect(emoji)}
+            >
+              {emoji}
+            </span>
+          ))}
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
