@@ -3,12 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const authRoutes = ["/login", "/register"];
-const privateRoutes = [
-  "/profile",
-  "/notifications",
-  "/messages",
-  "/settings/edit",
-];
+const privateRoutes = ["/profile", "/notifications", "/messages", "/settings"];
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("jwt")?.value;
@@ -26,12 +21,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/profile/:path*",
-    "/notifications/:path*",
-    "/messages/:path*",
-    "/settings/:path*",
-    "/login/:path*",
-    "/register/:path*",
-  ], // Protected routes
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|sw.js).*)"],
 };
