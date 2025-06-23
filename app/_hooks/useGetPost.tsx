@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import useUser from "./useUser";
 import { postType } from "@/lib/types/postTypes";
+import { useEffect, useState } from "react";
 
 const api = process.env.NEXT_PUBLIC_SERVER_URL!;
 
@@ -32,6 +33,7 @@ async function getPosts(
 
 export default function useGetPost(postId?: string) {
   const { user } = useUser();
+  const [mounted, setMounted] = useState(false);
   const { data, isLoading } = useQuery({
     queryKey: [`post-${postId}`],
     queryFn: () => getPost(postId),
@@ -54,7 +56,12 @@ export default function useGetPost(postId?: string) {
       }
       return undefined;
     },
+    enabled: !!mounted,
   });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return {
     data,
