@@ -74,7 +74,7 @@ export default function Emojy({
           size={18}
         />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align={align} className="h-[340px] ">
+      <DropdownMenuContent align={align} className=" ">
         <div className="grid grid-cols-6 gap-2" ref={pickerRef}>
           {emojys.map((emoji, i) => (
             <span
