@@ -1,7 +1,5 @@
-import { Suspense } from "react";
 import UserComp from "../UserComp";
 import ConversationList from "./ConversationList";
-import Loader from "../Loader";
 
 type props = {
   withId: string;
@@ -18,15 +16,15 @@ export default async function MessagesSidebar({ withId }: props) {
         <p className="text-sm font-semibold text-primary">Messages</p>
         <p className="text-xs text-primary">Requests</p>
       </div>
-      <Suspense
+      {/* <Suspense
         fallback={
           <div className="flex justify-center pt-6">
             <Loader className="text-center" />
           </div>
-        }
-      >
-        <ConversationList withId={withId} />
-      </Suspense>
+        } */}
+      {/* > */}
+      <ConversationList withId={withId} />
+      {/* </Suspense> */}
     </div>
   );
 }

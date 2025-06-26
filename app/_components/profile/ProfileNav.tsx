@@ -1,16 +1,20 @@
 "use client";
+import useUser from "@/app/_hooks/useUser";
 import { Bookmark, Grid, UserSquare } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
-export default function ProfileNav({
-  renderedTabs,
-}: {
-  renderedTabs: string[];
-}) {
+type props = { userId: string };
+
+export default function ProfileNav({ userId }: props) {
+  const { user } = useUser();
+
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
   const tab = searchParams.get("tab");
+
+  const showSaved = user?.id === userId ? true : false;
 
   function setActiveTab(tab: "posts" | "saved" | "tagged") {
     const params = new URLSearchParams(searchParams);
@@ -22,29 +26,28 @@ export default function ProfileNav({
     router.push(`${pathname}?${params.toString()}`);
   }
 
-  function renderTab(tab: string) {
-    if (renderedTabs.includes(tab)) return true;
-    return false;
-  }
+  useEffect(() => {
+    if (tab === "saved" && !showSaved) {
+      setActiveTab("posts");
+    }
+  }, [tab, showSaved]);
 
   return (
     <div className="border-t border-border flex items-center justify-center gap-12">
-      {renderTab("posts") && (
-        <p
-          onClick={() => setActiveTab("posts")}
-          className="text-xs text-muted-foreground flex items-center gap-1 relative pt-6 cursor-pointer"
-        >
-          <Grid size={14} />
-          <span className={`${!tab && "text-white"}`}>POSTS</span>
-          <span
-            className={`${
-              !tab ? "text-white w-16" : "hidden"
-            } absolute   h-[2px] bg-muted-foreground top-0 left-0 `}
-          ></span>
-        </p>
-      )}
+      <p
+        onClick={() => setActiveTab("posts")}
+        className="text-xs text-muted-foreground flex items-center gap-1 relative pt-6 cursor-pointer"
+      >
+        <Grid size={14} />
+        <span className={`${!tab && "text-white"}`}>POSTS</span>
+        <span
+          className={`${
+            !tab ? "text-white w-16" : "hidden"
+          } absolute   h-[2px] bg-muted-foreground top-0 left-0 `}
+        ></span>
+      </p>
 
-      {renderTab("saved") && (
+      {showSaved && (
         <p
           onClick={() => setActiveTab("saved")}
           className="text-xs text-muted-foreground flex items-center gap-1 relative pt-6 cursor-pointer"
@@ -58,21 +61,18 @@ export default function ProfileNav({
           ></span>
         </p>
       )}
-
-      {renderTab("tagged") && (
-        <p
-          onClick={() => setActiveTab("tagged")}
-          className="text-xs text-muted-foreground flex items-center gap-1 relative pt-6 cursor-pointer"
-        >
-          <UserSquare size={14} />
-          <span className={`${tab === "tagged" && "text-white"}`}>TAGGED</span>
-          <span
-            className={`${
-              tab === "tagged" ? "text-white w-18" : "hidden"
-            } absolute   h-[2px] bg-muted-foreground top-0 left-0 `}
-          ></span>
-        </p>
-      )}
+      <p
+        onClick={() => setActiveTab("tagged")}
+        className="text-xs text-muted-foreground flex items-center gap-1 relative pt-6 cursor-pointer"
+      >
+        <UserSquare size={14} />
+        <span className={`${tab === "tagged" && "text-white"}`}>TAGGED</span>
+        <span
+          className={`${
+            tab === "tagged" ? "text-white w-18" : "hidden"
+          } absolute   h-[2px] bg-muted-foreground top-0 left-0 `}
+        ></span>
+      </p>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { fullUserType, serverUserType } from "@/lib/types/userTypes";
+import { fullUserType } from "@/lib/types/userTypes";
 import UserProfilePicture from "../UserProfilePicture";
 import ProfileHeaderProtect from "./ProfileHeaderProtect";
 import { redirect } from "next/navigation";
@@ -19,15 +19,9 @@ async function getUser(
   return data;
 }
 
-export default async function ProfileHeader({
-  id,
-  loggedUserData,
-}: {
-  id: string;
-  loggedUserData: serverUserType;
-}) {
+export default async function ProfileHeader({ id }: { id: string }) {
   const user = await getUser(id);
-  if (!user.success) redirect(`/${id}`);
+  if (!user.success) redirect(`/`);
 
   const {
     image,
@@ -46,9 +40,6 @@ export default async function ProfileHeader({
           <ProfileHeaderProtect
             id={id}
             followersArr={followersArr}
-            loggedUserId={
-              loggedUserData.success ? loggedUserData?.user.id : undefined
-            }
             name={name}
           />
           <div className="flex items-center gap-6 text-sm text-muted-foreground">

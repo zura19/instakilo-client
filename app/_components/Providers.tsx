@@ -5,6 +5,7 @@ import ClientUserInitializer from "./ClientUserInitializer";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import NotificationsProvider from "./NotificationsProvider";
 import { ThemeProvider } from "./settings/ThemeProvider";
+import ClientMiddleware from "./ClientMiddleware";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const queryClient = new QueryClient({
@@ -24,6 +25,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       >
         <ClientUserInitializer />
         <NotificationsProvider />
+        <ClientMiddleware />
         <QueryClientProvider client={queryClient}>
           {children}
         </QueryClientProvider>

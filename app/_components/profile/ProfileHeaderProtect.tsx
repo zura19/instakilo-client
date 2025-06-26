@@ -1,20 +1,22 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import FollowButton from "../FollowButton";
 import Link from "next/link";
+import useUser from "@/app/_hooks/useUser";
 
 type props = {
   name: string;
   id: string;
   followersArr: { followerId: string }[];
-  loggedUserId?: string;
 };
 
 export default function ProfileHeaderProtect({
   name,
   id,
-  loggedUserId,
   followersArr,
 }: props) {
+  const { user } = useUser();
+  const loggedUserId = user?.id;
   return (
     <div className="flex items-center gap-3">
       <p className="text-primary">{name}</p>
