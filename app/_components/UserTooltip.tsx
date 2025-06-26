@@ -7,7 +7,6 @@ import {
 import { fullUserType } from "@/lib/types/userTypes";
 import { useQuery } from "@tanstack/react-query";
 import ProfileHeaderProtect from "./profile/ProfileHeaderProtect";
-import useUser from "../_hooks/useUser";
 import UserProfilePicture from "./UserProfilePicture";
 import ProfileHeaderSkeleton from "./skeletons/ProfileHeaderSkeleton";
 import FollowersFollowingsModal from "./profile/FollowersFollowingsModal";
@@ -42,7 +41,6 @@ export default function UserTooltip({ children, id }: props) {
 }
 
 function UserTooltipContent({ userId }: { userId: string }) {
-  const { user } = useUser();
   const { data, isLoading } = useQuery({
     queryKey: [`user-${userId}`],
     queryFn: () => getUserProfile(userId!),
@@ -70,12 +68,7 @@ function UserTooltipContent({ userId }: { userId: string }) {
     <section className="flex items-start gap-2 p-4">
       <UserProfilePicture image={image} imageSize="xl" iconSize="xl" />
       <div className="space-y-4">
-        <ProfileHeaderProtect
-          id={id}
-          followersArr={followersArr}
-          loggedUserId={user ? user.id : undefined}
-          name={name}
-        />
+        <ProfileHeaderProtect id={id} followersArr={followersArr} name={name} />
         <div className="flex items-center gap-6 text-sm text-muted-foreground">
           <p>
             <span className="text-white">{data.posts} </span>
