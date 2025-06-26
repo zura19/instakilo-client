@@ -7,6 +7,7 @@ const privateRoutes = ["/profile", "/notifications", "/messages", "/settings"];
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("jwt")?.value;
+  console.log(token);
   const pathname = request.nextUrl.pathname;
 
   if (authRoutes.includes(pathname) && token) {

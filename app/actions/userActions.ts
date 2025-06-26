@@ -7,6 +7,7 @@ export async function getLoggedUserData() {
   const data = await fetch(`${api}/users/profile`, {
     headers: {
       Authorization: `Bearer ${token}`,
+      credentials: "include",
     },
   });
   const user = await data.json();

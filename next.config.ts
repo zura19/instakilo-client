@@ -10,6 +10,15 @@ const nextConfig: NextConfig = {
       "res.cloudinary.com",
     ],
   },
+
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "https://instakilo-server.onrender.com/api/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
