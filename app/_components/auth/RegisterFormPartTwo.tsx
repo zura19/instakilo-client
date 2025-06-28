@@ -54,7 +54,10 @@ export default function RegisterFormPartTwo() {
   if (permision)
     return (
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="p-6">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="px-6 py-10 bg-accent/50"
+        >
           <div className="flex flex-col gap-6">
             <div className="flex flex-col items-center text-center">
               <h1 className="text-2xl font-bold">Hello {registerForm.name}</h1>
@@ -67,7 +70,7 @@ export default function RegisterFormPartTwo() {
               label="Gender"
               name="gender"
               placeholder="Select your gender"
-              selectClassName="w-full"
+              selectClassName="w-full rounded-none "
               control={form.control}
               options={[
                 { value: "male", label: "Male" },
@@ -85,7 +88,7 @@ export default function RegisterFormPartTwo() {
             <FormInputComp
               label="Bio"
               name="bio"
-              inputClassName="w-full"
+              inputClassName="w-full rounded-none"
               placeholder="Tell us about yourself"
               type="text"
               control={form.control}
@@ -115,11 +118,16 @@ export default function RegisterFormPartTwo() {
                 <input
                   type="file"
                   accept="image/*"
-                  className="hidden"
+                  className="hidden rounded-none"
                   onChange={handleImageChange}
                   id="image"
                 />
-                <Button type="button" variant={"secondary"} className="w-full">
+                <Button
+                  type="button"
+                  variant={"secondary"}
+                  className="w-full bg-blue-500 hover:bg-blue-400 rounded-none"
+                  asChild
+                >
                   <label
                     htmlFor="image"
                     className="cursor-pointer text-sm text-primary"
@@ -131,6 +139,7 @@ export default function RegisterFormPartTwo() {
             )}
 
             <FormButtonComp
+              className="w-full rounded-none "
               isLoading={form.formState.isSubmitting}
               disabled={form.formState.isSubmitting}
               type="submit"

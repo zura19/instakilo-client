@@ -1,12 +1,13 @@
 "use client";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import FormInputComp from "../FormInputComp";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, loginSchemaType } from "@/lib/zod";
 import { Form } from "@/components/ui/form";
 import useLogin from "@/app/_hooks/useLogin";
+import FormButtonComp from "../FormButtonComp";
+import { grandista } from "../sidebar/Sidebar";
 
 export default function LoginForm() {
   const form = useForm<loginSchemaType>({
@@ -24,18 +25,20 @@ export default function LoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="p-6">
-        <div className="flex flex-col gap-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="  ">
+        <div className="flex flex-col gap-4 bg-accent/50 px-6 py-10 border border-border">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-2xl font-bold">Welcome back</h1>
-            <p className="text-muted-foreground text-balance">
+            <Link href="/" className={`text-3xl  ${grandista.className}`}>
+              Instakilo
+            </Link>
+            {/* <p className="text-muted-foreground text-balance">
               Login to your Instakilo account
-            </p>
+            </p> */}
           </div>
           <FormInputComp
             label="Email"
             name="email"
-            inputClassName="w-full"
+            inputClassName="w-full rounded-none"
             placeholder="m@example.com"
             type="text"
             control={form.control}
@@ -44,7 +47,7 @@ export default function LoginForm() {
             <FormInputComp
               label="Password"
               name="password"
-              inputClassName="w-full"
+              inputClassName="w-full rounded-none"
               placeholder="********"
               type="password"
               control={form.control}
@@ -56,15 +59,20 @@ export default function LoginForm() {
               Forgot your password?
             </Link>
           </div>
-          <Button type="submit" className="w-full">
-            Login
-          </Button>
-          <div className="text-center text-sm">
-            Don&apos;t have an account?{" "}
-            <Link href="/register" className="underline underline-offset-4">
-              Sign up
-            </Link>
-          </div>
+          <FormButtonComp
+            text="Login"
+            type="submit"
+            className="w-full bg-blue-500 rounded-none text-primary hover:bg-blue-400 "
+          />
+        </div>
+        <div className="text-center text-sm bg-accent/50 py-5 mt-4 border border-border">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/register"
+            className="underline text-blue-500 hover:text-blue-400 underline-offset-4"
+          >
+            Sign up
+          </Link>
         </div>
       </form>
     </Form>

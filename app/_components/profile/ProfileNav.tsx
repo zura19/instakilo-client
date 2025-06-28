@@ -39,7 +39,7 @@ export default function ProfileNav({ userId }: props) {
         className="text-xs text-muted-foreground flex items-center gap-1 relative pt-6 cursor-pointer"
       >
         <Grid size={14} />
-        <span className={`${!tab && "text-white"}`}>POSTS</span>
+        <span className={`${!tab && "text-primary font-semibold"}`}>POSTS</span>
         <span
           className={`${
             !tab ? "text-white w-16" : "hidden"
@@ -53,7 +53,11 @@ export default function ProfileNav({ userId }: props) {
           className="text-xs text-muted-foreground flex items-center gap-1 relative pt-6 cursor-pointer"
         >
           <Bookmark size={14} />
-          <span className={`${tab === "saved" && "text-white"}`}>SAVES</span>
+          <span
+            className={`${tab === "saved" && "text-primary font-semibold"}`}
+          >
+            SAVES
+          </span>
           <span
             className={`${
               tab === "saved" ? "text-white w-16" : "hidden"
@@ -66,7 +70,9 @@ export default function ProfileNav({ userId }: props) {
         className="text-xs text-muted-foreground flex items-center gap-1 relative pt-6 cursor-pointer"
       >
         <UserSquare size={14} />
-        <span className={`${tab === "tagged" && "text-white"}`}>TAGGED</span>
+        <span className={`${tab === "tagged" && "text-primary font-semibold"}`}>
+          TAGGED
+        </span>
         <span
           className={`${
             tab === "tagged" ? "text-white w-18" : "hidden"

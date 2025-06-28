@@ -1,6 +1,6 @@
-import MessagesSidebar from "../_components/messages/MessagesSidebar";
-import MessagesInit from "../_components/messages/MessagesInit";
-import Messanger from "../_components/messages/Messanger";
+import MessagesInit from "@/app/_components/messages/MessagesInit";
+import MessagesSidebar from "@/app/_components/messages/MessagesSidebar";
+import Messanger from "@/app/_components/messages/Messanger";
 
 type props = {
   searchParams: Promise<{ with?: string }>;

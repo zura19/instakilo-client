@@ -7,6 +7,12 @@ import useSidebar from "@/app/_hooks/useSidebar";
 import SidebarSibling from "./SidebarSibling";
 import SearchUserSidebar from "../search/SearchUserSidebar";
 import Notifications from "../notifications/Notifications";
+import local from "next/font/local";
+
+export const grandista = local({
+  src: "../../../public/fonts/grandista.otf",
+  variable: "--font-grandista",
+});
 
 const sidebarLinks = [
   { to: "/", text: "Home" },
@@ -43,9 +49,9 @@ export default function Sidebar() {
         } transition-all duration-500`}
       >
         <h1
-          className={` hidden sm:block text-2xl pl-2 font-semibold ${
-            showSmallSidebar() ? "sm:hidden" : ""
-          } tracking-widest   ${""}`}
+          className={` hidden sm:block text-xl pl-2 font-extralight  text-primary ${
+            grandista.className
+          } ${showSmallSidebar() ? "sm:hidden" : ""} tracking-widest   ${""}`}
         >
           Instakilo
         </h1>

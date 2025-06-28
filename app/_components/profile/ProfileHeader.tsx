@@ -44,19 +44,23 @@ export default async function ProfileHeader({ id }: { id: string }) {
           />
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <p>
-              <span className="text-white">{posts} </span>
+              <span className="text-primary font-semibold">{posts} </span>
               posts
             </p>
             <FollowersFollowingsModal id={id} type="followers">
               <p className="cursor-pointer">
-                <span className="text-white">{followersArr.length} </span>
+                <span className="font-semibold text-primary">
+                  {followersArr.length}{" "}
+                </span>
                 followers
               </p>
             </FollowersFollowingsModal>
 
             <FollowersFollowingsModal id={id} type="following">
               <p className="cursor-pointer">
-                <span className="text-white">{followingArr.length} </span>
+                <span className="text-primary font-semibold">
+                  {followingArr.length}{" "}
+                </span>
                 following
               </p>
             </FollowersFollowingsModal>

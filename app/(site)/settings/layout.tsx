@@ -1,4 +1,4 @@
-import SettingsSidebar from "../_components/settings/SettingsSidebar";
+import SettingsSidebar from "@/app/_components/settings/SettingsSidebar";
 
 type props = {
   children: React.ReactNode;

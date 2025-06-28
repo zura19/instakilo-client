@@ -1,5 +1,5 @@
-import EmptyTab from "../_components/profile/EmptyTab";
-import PostOnProfile from "../_components/profile/PostOnProfile";
+import EmptyTab from "@/app/_components/profile/EmptyTab";
+import PostOnProfile from "@/app/_components/profile/PostOnProfile";
 
 type postType = {
   id: string;

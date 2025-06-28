@@ -1,6 +1,6 @@
-import { AuthFormTemplate } from "../_components/auth/AuthFormTemplate";
-import RegisterForm from "../_components/auth/RegisterForm";
-import RegisterFormPartTwo from "../_components/auth/RegisterFormPartTwo";
+import { AuthFormTemplate } from "@/app/_components/auth/AuthFormTemplate";
+import RegisterForm from "@/app/_components/auth/RegisterForm";
+import RegisterFormPartTwo from "@/app/_components/auth/RegisterFormPartTwo";
 
 export const metadata = {
   title: "Instakilo - Register",

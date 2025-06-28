@@ -49,7 +49,7 @@ export default function FormCalendarComp({
                 <Button
                   variant={"outline"}
                   className={cn(
-                    "w-full justify-start text-left font-normal",
+                    "w-full justify-start text-left font-normal rounded-none",
                     !field.value && "text-muted-foreground"
                   )}
                 >
