@@ -130,6 +130,10 @@
   }
 }
 
+.instagram-story-viewed {
+  background: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7);
+}
+
 /* HTML: <div class="loader"></div> */
 .loader {
   width: 25px;

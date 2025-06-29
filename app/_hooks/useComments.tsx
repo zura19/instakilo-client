@@ -15,6 +15,13 @@ type getCommentsResponse =
     }
   | { success: false; message: string };
 
+type deleteUpdateCommentResponse =
+  | {
+      success: true;
+      message: string;
+    }
+  | { success: false; message: string };
+
 async function getComments(
   postId: string,
   limit: number = 0,
@@ -57,9 +64,55 @@ async function likeComment(postId: string, commentId: string) {
   return data;
 }
 
+async function deleteComment(
+  postId: string,
+  commentId: string
+): Promise<deleteUpdateCommentResponse> {
+  const res = await fetch(`${api}/comments/${postId}/${commentId}`, {
+    method: "DELETE",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await res.json();
+  return data;
+}
+
+async function updateComment(
+  postId: string,
+  commentId: string,
+  content: string
+): Promise<deleteUpdateCommentResponse> {
+  const res = await fetch(`${api}/comments/${postId}/${commentId}`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ content }),
+  });
+  const data = await res.json();
+  return data;
+}
+
+// async function reportComment(postId: string, commentId: string) {
+//   const res = await fetch(`${api}/comments/${postId}/${commentId}/report`, {
+//     method: "POST",
+//     credentials: "include",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//   });
+//   const data = await res.json();
+//   return data;
+// }
+
 export default function useComments(postId: string) {
   const { user } = useUser();
   const [isLoading, setIsLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
@@ -136,6 +189,65 @@ export default function useComments(postId: string) {
     }
   }
 
+  async function handleDeleteComment(
+    postId: string,
+    commentId: string
+  ): Promise<boolean> {
+    setIsDeleting(true);
+    try {
+      const data = await deleteComment(postId, commentId);
+
+      if (!data.success) {
+        toast.error(data.message);
+        return false;
+      }
+
+      toast.success(data.message);
+      queryClient.invalidateQueries({
+        queryKey: [`comments-${postId}`],
+        exact: true,
+      });
+      return true;
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to delete comment");
+      return false;
+    } finally {
+      setIsDeleting(false);
+    }
+  }
+
+  async function handleUpdateComment(
+    postId: string,
+    commentId: string,
+    content: string
+  ): Promise<boolean> {
+    setIsUpdating(true);
+    try {
+      const data = await updateComment(postId, commentId, content);
+      if (!data.success) {
+        toast.error(data.message);
+        return false;
+      }
+      toast.success(data.message);
+      queryClient.invalidateQueries({
+        queryKey: [`comments-${postId}`],
+        exact: true,
+      });
+      return true;
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to update comment");
+      return false;
+    } finally {
+      setIsUpdating(false);
+    }
+  }
+
+  async function handleReportComment() {
+    toast.message("Work in progress");
+  }
+
   return {
     data,
     isLoadingComments,
@@ -148,5 +260,10 @@ export default function useComments(postId: string) {
     handleLikeComment,
     commentId: c,
     loggedUserId: user?.id,
+    handleDeleteComment,
+    isDeleting,
+    handleUpdateComment,
+    isUpdating,
+    handleReportComment,
   };
 }

@@ -53,7 +53,7 @@ export default function PostOptionsModal({
   }
 
   const btnClassName =
-    "rounded-none p-4 text-primary text-xs transition-all duration-200";
+    "rounded-none py-6 text-primary text-xs transition-all duration-200";
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -89,6 +89,13 @@ export default function PostOptionsModal({
               </UploadModal>
             </>
           )}
+
+          <Button
+            className={btnClassName + " text-destructive"}
+            variant="ghost"
+          >
+            Report
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

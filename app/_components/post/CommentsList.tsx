@@ -61,6 +61,7 @@ export default function CommentsList({ postId, paddingClass }: props) {
             username={comment.author.name}
             image={comment.author.image}
             createdAt={comment.createdAt}
+            postId={postId}
             key={comment.id}
           />
         ))}

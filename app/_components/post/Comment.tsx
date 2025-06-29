@@ -1,9 +1,10 @@
 import Link from "next/link";
 import UserProfilePicture from "../UserProfilePicture";
 import { timeAgo } from "@/lib/utils";
-import { Heart } from "lucide-react";
+import { Heart, MoreHorizontal } from "lucide-react";
 import { useState } from "react";
 import LikesModal from "./LikesModal";
+import CommentOptionsModal from "./CommentOptionsModal";
 
 type props = {
   commentId: string;
@@ -12,6 +13,7 @@ type props = {
   username: string;
   image: string;
   loggedUserId: string;
+  postId: string;
   likes: { id: string }[];
   isLiked: (likes: string[]) => boolean;
   handleLikeComment: (commentId: string) => Promise<{ success: boolean }>;
@@ -29,9 +31,12 @@ export default function Comment({
   isLiked,
   handleLikeComment,
   image,
+  postId,
 }: props) {
   const [optLikes, setOptLikes] = useState(likes);
   const isLikedOptimistic = isLiked(optLikes.map((like) => like.id));
+
+  const showMore = loggedUserId === userId;
 
   async function handleOptLikeComment() {
     setOptLikes((prev) =>
@@ -73,6 +78,18 @@ export default function Comment({
           <LikesModal commentId={commentId}>
             <p className="cursor-pointer">{optLikes.length} likes</p>
           </LikesModal>
+          {showMore && (
+            <CommentOptionsModal
+              postId={postId}
+              commentId={commentId}
+              content={content}
+            >
+              <MoreHorizontal
+                className="cursor-pointer hover:opacity-70 transition-all duration-300"
+                size={15}
+              />
+            </CommentOptionsModal>
+          )}
         </div>
       </div>
       <div className="flex ml-auto self-start">
