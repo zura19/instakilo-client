@@ -32,7 +32,7 @@ async function getUserProfile(id: string): getUserType {
 export default function UserTooltip({ children, id }: props) {
   return (
     <Tooltip>
-      <TooltipTrigger>{children}</TooltipTrigger>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
       <TooltipContent className="bg-background shadow-sm shadow-accent rounded-sm">
         <UserTooltipContent userId={id as string} />
       </TooltipContent>
@@ -62,6 +62,12 @@ function UserTooltipContent({ userId }: { userId: string }) {
     bio,
   } = data.user;
 
+  const renderBio = (number: number) => {
+    if (!bio) return "";
+    if (bio.length > number) return bio.slice(0, number) + "...";
+    return bio;
+  };
+
   console.log(data);
 
   return (
@@ -87,7 +93,7 @@ function UserTooltipContent({ userId }: { userId: string }) {
             </p>
           </FollowersFollowingsModal>
         </div>
-        <p className="text-sm break-words text-primary">{bio || ""}</p>
+        <p className="text-sm break-words text-primary">{renderBio(35)}</p>
       </div>
     </section>
   );

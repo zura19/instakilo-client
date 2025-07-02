@@ -1,38 +1,108 @@
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import useUser from "./useUser";
+import { storyType } from "@/lib/types/storyTypes";
+import { toast } from "sonner";
+import useKeyDown from "./useKeyDown";
 
+const api = process.env.NEXT_PUBLIC_SERVER_URL!;
 const DURATION = 5000;
-const stArr = [
-  {
-    id: 1,
-    image:
-      "https://media.licdn.com/dms/image/v2/D5622AQFifuSkIMPGeQ/feedshare-shrink_800/B56ZdL0rD.GsAg-/0/1749323790221?e=1752105600&v=beta&t=KX7FMliPXgv-vwNDZXXth3mpX-iYl0zam_tWa7r7PZQ",
-  },
-  {
-    id: 2,
-    image:
-      "https://res.cloudinary.com/demai8flb/image/upload/v1750354698/go9485ljlcxz0wd9rors.png",
-  },
-  {
-    id: 3,
-    image:
-      "https://res.cloudinary.com/demai8flb/image/upload/v1750342173/iwdp5u95uzlt2kmop6oy.jpg",
-  },
-];
 
-export default function useStory() {
-  const [active, setActive] = useState(0);
+// prettier-ignore
+type getUserStoriesRes =  { success: true; stories: storyType[]} | { success: false; message: string };
+// prettier-ignore
+type viewStoryRes =  { success: true; message: string} | { success: false; message: string };
+// prettier-ignore
+type storyViewersType = {success: true; viewers: { id: string; name: string; image: string }[] } | { success: false; message: string };
+
+async function getUserStories(id: string): Promise<getUserStoriesRes> {
+  const res = await fetch(`${api}/stories/${id}`, {
+    credentials: "include",
+  });
+  const data = await res.json();
+  console.log(data);
+  return data;
+}
+
+async function viewStory(storyId: string): Promise<viewStoryRes> {
+  const res = await fetch(`${api}/stories/view/${storyId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+  const data = await res.json();
+  return data;
+}
+
+async function getViewers(storyId: string): Promise<storyViewersType> {
+  const res = await fetch(`${api}/stories/view/${storyId}`, {
+    credentials: "include",
+  });
+  const data = await res.json();
+  console.log(data);
+  return data;
+}
+
+export default function useStory(id: string) {
+  const { user } = useUser();
   const [isPaused, setIsPaused] = useState(false);
+  const [showViewers, setShowViewers] = useState(false);
+  const [active, setActive] = useState(0);
+  const queryClient = useQueryClient();
 
-  const dissableNext = active === stArr.length - 1;
-  const dissablePrev = active === 0;
+  const { data, isLoading } = useQuery({
+    queryKey: ["story", id],
+    queryFn: () => getUserStories(id),
+  });
+
+  const activeStoryId = data?.success ? data.stories[active].id : null;
+  const { data: viewersData, isLoading: isLoadingViewers } = useQuery({
+    queryKey: ["viewers", activeStoryId],
+    queryFn: () => getViewers(activeStoryId!),
+    enabled: showViewers && !!activeStoryId,
+  });
+
+  useKeyDown({ key: "ArrowRight", fn: next });
+  useKeyDown({ key: "ArrowLeft", fn: prev });
+
+  const dissableNext =
+    data?.success &&
+    (data.stories.length === 1 || active === data.stories.length - 1);
+  const dissablePrev =
+    data?.success && (data.stories.length === 1 || active === 0);
+
+  const isLoggedUser = user?.id === id;
+
+  const initialActiveStory = useMemo(() => {
+    if (!data?.success) return 0;
+    const index = data.stories.findIndex(
+      (story) =>
+        story.viewedBy.length === 0 ||
+        story.viewedBy.every((v) => v.id !== user?.id)
+    );
+    return index !== -1 ? index : 0;
+  }, [data, user?.id]);
 
   useEffect(() => {
-    if (isPaused || active >= stArr.length) return;
+    if (user?.id === id) return;
+    setActive((prev) => (initialActiveStory ? initialActiveStory : prev));
+  }, [data, initialActiveStory, user?.id, id]);
+
+  useEffect(() => {
+    if (
+      !data?.success ||
+      isLoading ||
+      isPaused ||
+      active >= data.stories.length
+    )
+      return;
 
     const int = setInterval(() => {
       setActive((prev) => {
-        if (prev + 1 >= stArr.length) {
+        if (prev + 1 >= data.stories.length) {
           clearInterval(int);
           redirect("/");
         }
@@ -41,15 +111,39 @@ export default function useStory() {
     }, DURATION);
 
     return () => clearInterval(int);
-  }, [active, isPaused]);
+  }, [active, isPaused, isLoading, data]);
+
+  useEffect(() => {
+    async function view() {
+      if (!data?.success || user?.id === id) return;
+      const isViewed = data.stories[active].viewedBy.some(
+        (v) => v.id === user?.id
+      );
+      if (isViewed) return;
+
+      const d = await viewStory(data.stories[active].id);
+      if (!d?.success) {
+        toast.error(d.message);
+        return;
+      }
+      toast.success(d.message);
+      queryClient.invalidateQueries({
+        queryKey: ["stories"],
+        exact: true,
+      });
+    }
+    view();
+  }, [active, data, user?.id, id, queryClient]);
 
   function next() {
-    setActive((prev) => prev + 1);
+    if (!data?.success) return;
+    setActive((prev) => (prev + 1 >= data.stories.length ? 0 : prev + 1));
     setIsPaused(false);
   }
 
   function prev() {
-    setActive((prev) => prev - 1);
+    if (!data?.success) return;
+    setActive((prev) => (prev === 0 ? data.stories.length - 1 : prev - 1));
     setIsPaused(false);
   }
 
@@ -57,14 +151,32 @@ export default function useStory() {
     setIsPaused((prev) => !prev);
   }
 
+  function handleShowViewers() {
+    if (user?.id !== id) return;
+    setIsPaused(true);
+    setShowViewers(true);
+  }
+
+  function handleHideViewers() {
+    setIsPaused(false);
+    setShowViewers(false);
+  }
+
   return {
+    data,
+    isLoading,
+    isLoggedUser,
     active,
     isPaused,
     next,
     dissableNext,
     prev,
     dissablePrev,
-    stArr,
     togglePause,
+    showViewers,
+    handleShowViewers,
+    handleHideViewers,
+    viewersData,
+    isLoadingViewers,
   };
 }

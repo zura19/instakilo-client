@@ -17,6 +17,7 @@ export default function ClientMiddleware() {
       "/settings/notifications",
       "/settings/updatePassword",
       "/settings/theme",
+      "/story",
     ];
 
     if (user && authRoutes.includes(pathname)) {

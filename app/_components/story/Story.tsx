@@ -5,11 +5,11 @@ type props = {
   image?: string;
   to: string;
   name: string;
+  isViewed: boolean;
 };
 
-export default function Story({ image, to, name }: props) {
-  const viewed = true;
-  const borderClass = viewed ? " instagram-story-viewed " : " bg-input ";
+export default function Story({ image, to, name, isViewed }: props) {
+  const borderClass = !isViewed ? " instagram-story-color " : " bg-input";
   const renderName = name.length > 8 ? name.slice(0, 8) + "..." : name;
 
   return (

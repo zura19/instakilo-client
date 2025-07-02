@@ -3,13 +3,17 @@ import UserProfilePicture from "../UserProfilePicture";
 import ProfileHeaderProtect from "./ProfileHeaderProtect";
 import { redirect } from "next/navigation";
 import FollowersFollowingsModal from "./FollowersFollowingsModal";
+import ShowMoreText from "../ShowMoreText";
+import Link from "next/link";
 
 const api = process.env.NEXT_PUBLIC_SERVER_URL;
 
-async function getUser(
-  id: string
-): Promise<
-  | { success: true; user: fullUserType; posts: number }
+async function getUser(id: string): Promise<
+  | {
+      success: true;
+      user: fullUserType & { hasStory: boolean; isStoryViewed: boolean };
+      posts: number;
+    }
   | { success: false; message: string }
 > {
   const res = await fetch(`${api}/users/${id}`, {
@@ -23,6 +27,8 @@ export default async function ProfileHeader({ id }: { id: string }) {
   const user = await getUser(id);
   if (!user.success) redirect(`/`);
 
+  console.log(user);
+
   const {
     image,
     bio,
@@ -32,16 +38,26 @@ export default async function ProfileHeader({ id }: { id: string }) {
   } = user.user;
   const { posts } = user;
 
+  const hasStory = user?.user?.hasStory;
+
   if (user.success)
     return (
-      <section className="flex items-start gap-12">
-        <UserProfilePicture image={image} imageSize="4xl" iconSize="4xl" />
-        <div className="space-y-4">
+      <section className="grid grid-cols-[auto_1fr]  gap-12">
+        <Link
+          href={`/story/${id}`}
+          className={`${
+            !hasStory ? "bg-input" : "instagram-story-color"
+          }  p-[2px] rounded-full`}
+        >
+          <UserProfilePicture image={image} imageSize="4xl" iconSize="4xl" />
+        </Link>
+        <div className=" space-y-4">
           <ProfileHeaderProtect
             id={id}
             followersArr={followersArr}
             name={name}
           />
+
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <p>
               <span className="text-primary font-semibold">{posts} </span>
@@ -65,7 +81,11 @@ export default async function ProfileHeader({ id }: { id: string }) {
               </p>
             </FollowersFollowingsModal>
           </div>
-          <p className="text-sm break-words">{bio || ""}</p>
+          {bio && (
+            <p className="text-sm break-words">
+              <ShowMoreText text={bio} limit={70} />
+            </p>
+          )}
         </div>
       </section>
     );

@@ -1,3 +1,4 @@
+"use client";
 import { chunkArray } from "@/lib/utils";
 import Story from "./Story";
 import {
@@ -7,24 +8,44 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-
-const arr = Array.from({ length: 20 });
+import UserStorySkeleton from "../skeletons/UserStorySkeleton";
+import useFollowingStories from "@/app/_hooks/useFollowingStories";
 
 const btnClass =
   "absolute size-6 dark:bg-accent opacity-0 group-hover:opacity-100 disabled:opacity-0 hover:dark:bg-accent/70 transition-all duration-300 ";
 
-const chunkedStories = chunkArray(arr, 8);
 export default function StoriesList() {
+  // prettier-ignore
+  const { data, isLoading,  } = useFollowingStories();
+
+  if (isLoading) return <UserStorySkeleton />;
+  if (!data?.success) return null;
+
+  // const arr = data.pages.filter((p) => p.success).flatMap((p) => p.stories);
+  console.log(data.stories);
+  const chunkedStories = chunkArray(data.stories, 8);
+
   return (
-    <Carousel className="relative group max-w-[610px]  py-1">
+    <Carousel
+      opts={{ watchDrag: false }}
+      className="relative group max-w-[610px]  py-1"
+    >
       <CarouselContent className="">
         {chunkedStories.map((group, i) => (
           <CarouselItem key={i}>
-            <div className="flex gap-6">
-              {group.map((_, j) => (
-                <Story name="JohnDoe1232wel" key={j} to="/story/1" />
-              ))}
-            </div>
+            {
+              <div className="flex gap-6">
+                {group.map((story, i) => (
+                  <Story
+                    isViewed={story.isViewed}
+                    image={story.image}
+                    name={story.name}
+                    key={story.id + i}
+                    to={`/story/${story.id}`}
+                  />
+                ))}
+              </div>
+            }
           </CarouselItem>
         ))}
       </CarouselContent>

@@ -43,8 +43,8 @@ export default function ProfileHeaderProtect({
           <Button size={"sm"} variant={"secondary"} className="text-xs" asChild>
             <Link href={`/settings/edit`}>Edit Profile</Link>
           </Button>
-          <Button variant={"secondary"} size={"sm"} className="text-xs">
-            View Archive
+          <Button variant={"secondary"} size={"sm"} className="text-xs" asChild>
+            <Link href={`/archive`}>View Archive</Link>
           </Button>
         </>
       )}
