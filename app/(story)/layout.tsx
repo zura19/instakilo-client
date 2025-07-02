@@ -2,7 +2,7 @@ import { X } from "lucide-react";
 import localFont from "next/font/local";
 import Link from "next/link";
 
-export const grandista = localFont({
+const grandista = localFont({
   src: "../../public/fonts/grandista.otf",
   variable: "--font-grandista",
 });
